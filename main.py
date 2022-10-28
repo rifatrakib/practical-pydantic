@@ -9,6 +9,11 @@ async def index():
     return {"api": "fastapi"}
 
 
-@app.post("/simple-user/", response_model=UsageModel.SimpleUser)
+@app.post("/simple-users/", response_model=UsageModel.SimpleUser)
 async def read_simple_user(user: UsageModel.SimpleUser):
     return user
+
+
+@app.post("/recursive-models/", response_model=UsageModel.Spam)
+async def read_spam_data(spam: UsageModel.Spam):
+    return spam
