@@ -23,3 +23,9 @@ async def read_spam_data(spam: UsageModel.Spam):
 async def read_company(company: UsageModel.CompanyModel):
     company_orm = UsageModel.CompanyOrm(**company.dict())
     return company_orm
+
+
+@app.post("/reserved-keywords/", response_model=UsageModel.ReserveKeyModel)
+async def read_keyword(keyword: UsageModel.ReserveKeyModel):
+    orm_model = UsageModel.SQLModel(metadata_=keyword.metadata)
+    return orm_model

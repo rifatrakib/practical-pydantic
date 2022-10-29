@@ -1,6 +1,6 @@
-from typing import List, Optional
-from pydantic import BaseModel, constr
-from sqlalchemy import Column, Integer, String
+from typing import List, Dict, Optional
+from pydantic import BaseModel, Field, constr
+from sqlalchemy import Column, Integer, String, JSON
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -41,6 +41,20 @@ class CompanyModel(BaseModel):
     public_key: constr(max_length=20)
     name: constr(max_length=63)
     domains: List[constr(max_length=255)]
+    
+    class Config:
+        orm_mode = True
+
+
+class SQLModel(Base):
+    __tablename__ = "my_table"
+    
+    id = Column("id", Integer, primary_key=True)
+    metadata_ = Column("metadata", JSON)
+
+
+class ReserveKeyModel(BaseModel):
+    metadata: Dict[str, str] = Field(alias="metadata_")
     
     class Config:
         orm_mode = True
