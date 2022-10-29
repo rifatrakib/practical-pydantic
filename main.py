@@ -29,3 +29,18 @@ async def read_company(company: UsageModel.CompanyModel):
 async def read_keyword(keyword: UsageModel.ReserveKeyModel):
     orm_model = UsageModel.SQLModel(metadata_=keyword.metadata)
     return orm_model
+
+
+@app.post("/pets/", response_model=UsageModel.Pet)
+async def read_pets(pet: UsageModel.Pet):
+    pet_orm = UsageModel.PetClass(**pet.dict())
+    return pet_orm
+
+
+@app.post("/persons/", response_model=UsageModel.Person)
+async def read_persons(person: UsageModel.Person):
+    person_orm = UsageModel.PersonClass(**person.dict())
+    pets = []
+    for pet in person.pets:
+        pets.append(UsageModel.PetClass(**pet.dict()))
+    return person_orm

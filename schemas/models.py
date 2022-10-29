@@ -58,3 +58,33 @@ class ReserveKeyModel(BaseModel):
     
     class Config:
         orm_mode = True
+
+
+class PetClass:
+    def __init__(self, *, name: str, species: str):
+        self.name = name
+        self.species = species
+
+
+class PersonClass:
+    def __init__(self, *, name: str, age: float = None, pets: List[PetClass]):
+        self.name = name
+        self.age = age
+        self.pets = pets
+
+
+class Pet(BaseModel):
+    name: str
+    species: str
+    
+    class Config:
+        orm_mode = True
+
+
+class Person(BaseModel):
+    name: str
+    age: float = None
+    pets: List[Pet]
+    
+    class Config:
+        orm_mode = True
