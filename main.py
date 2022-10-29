@@ -17,3 +17,9 @@ async def read_simple_user(user: UsageModel.SimpleUser):
 @app.post("/recursive-models/", response_model=UsageModel.Spam)
 async def read_spam_data(spam: UsageModel.Spam):
     return spam
+
+
+@app.post("/companies/", response_model=UsageModel.CompanyModel)
+async def read_company(company: UsageModel.CompanyModel):
+    company_orm = UsageModel.CompanyOrm(**company.dict())
+    return company_orm
