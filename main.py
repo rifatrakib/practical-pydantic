@@ -56,3 +56,8 @@ async def read_custom_getter(xmlstring: str = Body()):
 @app.post("/errors/", response_model=UsageModel.Model)
 async def read_errors(data: UsageModel.Model):
     return data
+
+
+@app.post("/validation-errors/", response_model=UsageModel.ValidatorModel)
+async def read_invalid_errors(data: UsageModel.ValidatorModel):
+    return data

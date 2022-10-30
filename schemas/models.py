@@ -1,6 +1,10 @@
 from typing import Any, List, Dict, Optional
 from pydantic.utils import GetterDict
-from pydantic import BaseModel, ValidationError, Field, constr, conint
+from pydantic import (
+    BaseModel, ValidationError, PydanticValueError,
+    Field, constr, conint, validator
+)
+from xml.etree.ElementTree import fromstring
 from sqlalchemy import Column, Integer, String, JSON
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.ext.declarative import declarative_base
@@ -127,3 +131,13 @@ class Model(BaseModel):
     list_of_ints: List[int] = None
     a_float: float = None
     recursive_model: Location = None
+
+
+class ValidatorModel(BaseModel):
+    foo: str
+    
+    @validator("foo")
+    def value_must_equal_bar(cls, v):
+        if v != "bar":
+            raise ValueError('value must be "bar"')
+        return v
