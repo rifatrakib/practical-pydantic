@@ -1,5 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Body
 from schemas import models as UsageModel
+from xml.etree.ElementTree import fromstring
 
 app = FastAPI()
 
@@ -44,3 +45,14 @@ async def read_persons(person: UsageModel.Person):
     for pet in person.pets:
         pets.append(UsageModel.PetClass(**pet.dict()))
     return person_orm
+
+
+@app.post("/custom-getter-dict/", response_model=UsageModel.UserGetterModel)
+async def read_custom_getter(xmlstring: str = Body()):
+    user = UsageModel.UserGetterModel.from_orm(fromstring(xmlstring))
+    return user
+
+
+@app.post("/errors/", response_model=UsageModel.Model)
+async def read_errors(data: UsageModel.Model):
+    return data

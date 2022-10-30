@@ -1,5 +1,6 @@
-from typing import List, Dict, Optional
-from pydantic import BaseModel, Field, constr
+from typing import Any, List, Dict, Optional
+from pydantic.utils import GetterDict
+from pydantic import BaseModel, ValidationError, Field, constr, conint
 from sqlalchemy import Column, Integer, String, JSON
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.ext.declarative import declarative_base
@@ -88,3 +89,41 @@ class Person(BaseModel):
     
     class Config:
         orm_mode = True
+
+
+class UserGetter(GetterDict):
+    def get(self, key: str, default: Any) -> Any:
+        # element attributes
+        if key in {"Id", "Status"}:
+            return self._obj.attrib.get(key, default)
+        # element children
+        else:
+            try:
+                return self._obj.find(key).attrib["Value"]
+            except (AttributeError, KeyError):
+                return default
+
+
+class UserGetterModel(BaseModel):
+    Id: int
+    Status: Optional[str]
+    FirstName: Optional[str]
+    LastName: Optional[str]
+    LoggedIn: bool
+    
+    class Config:
+        orm_mode = True
+        getter_dict = UserGetter
+
+
+class Location(BaseModel):
+    lat = 0.1
+    lng = 10.1
+
+
+class Model(BaseModel):
+    is_required: float
+    gt_int: conint(gt=42)
+    list_of_ints: List[int] = None
+    a_float: float = None
+    recursive_model: Location = None
