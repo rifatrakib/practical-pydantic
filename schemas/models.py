@@ -133,11 +133,16 @@ class Model(BaseModel):
     recursive_model: Location = None
 
 
+class NotABarError(PydanticValueError):
+    code = "not_a_bar"
+    msg_template = 'value is not "bar", got "{wrong_value}"'
+
+
 class ValidatorModel(BaseModel):
     foo: str
     
     @validator("foo")
     def value_must_equal_bar(cls, v):
         if v != "bar":
-            raise ValueError('value must be "bar"')
+            raise NotABarError(wrong_value=v)
         return v
