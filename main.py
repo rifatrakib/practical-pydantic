@@ -15,9 +15,15 @@ async def read_simple_user(user: UsageModel.SimpleUser):
     return user
 
 
-@app.post("/user/login/records/", response_model=UsageModel.UserLoginRecord)
+@app.post("/users/login/records/", response_model=UsageModel.UserLoginRecord)
 async def read_user_login_records(record: UsageModel.UserLoginRecord):
     return record
+
+
+@app.post("/users/trusted/", response_model=UsageModel.TrustedUser)
+async def read_trusted_users(record: UsageModel.TrustedUser):
+    user_model = UsageModel.TrustedUser.construct(**record.dict())
+    return user_model
 
 
 @app.post("/recursive-models/", response_model=UsageModel.Spam)

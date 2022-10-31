@@ -156,3 +156,9 @@ class UserLoginRecord(BaseModel):
     id: int
     name = "John Doe"
     last_login: datetime = None
+
+
+class TrustedUser(BaseModel):
+    id: int
+    age: int
+    name: str = "John Doe"
