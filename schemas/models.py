@@ -9,6 +9,10 @@ from sqlalchemy import Column, Integer, String, JSON
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.ext.declarative import declarative_base
 
+import pickle
+from pathlib import Path
+from datetime import datetime
+
 Base = declarative_base()
 
 
@@ -146,3 +150,9 @@ class ValidatorModel(BaseModel):
         if v != "bar":
             raise NotABarError(wrong_value=v)
         return v
+
+
+class UserLoginRecord(BaseModel):
+    id: int
+    name = "John Doe"
+    last_login: datetime = None

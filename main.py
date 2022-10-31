@@ -15,6 +15,11 @@ async def read_simple_user(user: UsageModel.SimpleUser):
     return user
 
 
+@app.post("/user/login/records/", response_model=UsageModel.UserLoginRecord)
+async def read_user_login_records(record: UsageModel.UserLoginRecord):
+    return record
+
+
 @app.post("/recursive-models/", response_model=UsageModel.Spam)
 async def read_spam_data(spam: UsageModel.Spam):
     return spam
