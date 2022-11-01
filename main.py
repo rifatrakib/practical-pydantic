@@ -77,3 +77,8 @@ async def read_invalid_errors(data: UsageModel.ValidatorModel):
 @app.post("/generic-model/", response_model=UsageModel.Response)
 async def read_generic_model(data: UsageModel.DataModel):
     return UsageModel.Response[UsageModel.DataModel](data=data)
+
+
+@app.post("/sub-model/", response_model=UsageModel.ChildModel)
+async def read_subclass_model(data: UsageModel.ChildModel):
+    return data

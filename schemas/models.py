@@ -1,4 +1,4 @@
-from typing import Generic, TypeVar, Optional, Any, List, Dict 
+from typing import Generic, TypeVar, Optional, Tuple, Type, Any, List, Dict
 from pydantic.utils import GetterDict
 from pydantic.generics import GenericModel
 from pydantic import (
@@ -198,3 +198,24 @@ class BaseClassType(GenericModel, Generic[TypeX]):
 
 class ChildClassType(BaseClassType[TypeX], Generic[TypeX]):
     pass
+
+
+TypeY = TypeVar("TypeY")
+TypeZ = TypeVar("TypeZ")
+
+
+class BaseRootClass(GenericModel, Generic[TypeX, TypeY]):
+    x: TypeX
+    y: TypeY
+
+
+class ChildModel(BaseRootClass[int, TypeY], Generic[TypeY, TypeZ]):
+    z: TypeZ
+
+
+class ResponseConcrete(GenericModel, Generic[DataT]):
+    data: DataT
+    
+    @classmethod
+    def __concrete_name__(cls: Type[Any], params: Tuple[Type[Any], ...]) -> str:
+        return f"{params[0].__name__.title()}Response"
