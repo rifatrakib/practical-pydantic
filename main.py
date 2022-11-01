@@ -82,3 +82,8 @@ async def read_generic_model(data: UsageModel.DataModel):
 @app.post("/sub-model/", response_model=UsageModel.ChildModel)
 async def read_subclass_model(data: UsageModel.ChildModel):
     return data
+
+
+@app.post("/model-concrete/", response_model=UsageModel.ResponseConcrete)
+async def read_concrete_model(data: UsageModel.ResponseConcrete):
+    return data
