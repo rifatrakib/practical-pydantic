@@ -72,3 +72,8 @@ async def read_errors(data: UsageModel.Model):
 @app.post("/validation-errors/", response_model=UsageModel.ValidatorModel)
 async def read_invalid_errors(data: UsageModel.ValidatorModel):
     return data
+
+
+@app.post("/generic-model/", response_model=UsageModel.Response)
+async def read_generic_model(data: UsageModel.DataModel):
+    return UsageModel.Response[UsageModel.DataModel](data=data)

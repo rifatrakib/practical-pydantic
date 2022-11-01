@@ -1,5 +1,6 @@
-from typing import Any, List, Dict, Optional
+from typing import Generic, TypeVar, Optional, Any, List, Dict 
 from pydantic.utils import GetterDict
+from pydantic.generics import GenericModel
 from pydantic import (
     BaseModel, ValidationError, PydanticValueError,
     Field, constr, conint, validator
@@ -9,8 +10,6 @@ from sqlalchemy import Column, Integer, String, JSON
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.ext.declarative import declarative_base
 
-import pickle
-from pathlib import Path
 from datetime import datetime
 
 Base = declarative_base()
@@ -162,3 +161,40 @@ class TrustedUser(BaseModel):
     id: int
     age: int
     name: str = "John Doe"
+
+
+class Error(BaseModel):
+    code: int
+    message: str
+
+
+class DataModel(BaseModel):
+    numbers: List[int]
+    people: List[str]
+
+
+DataT = TypeVar('DataT')
+
+
+class Response(GenericModel, Generic[DataT]):
+    data: Optional[DataT]
+    error: Optional[Error]
+    
+    @validator("error", always=True)
+    def check_consistency(cls, v, values):
+        if v is not None and values["data"] is not None:
+            raise ValueError("must not provide both data and error")
+        if v is None and values.get("data") is None:
+            raise ValueError("must provide data or error")
+        return v
+
+
+TypeX = TypeVar("TypeX")
+
+
+class BaseClassType(GenericModel, Generic[TypeX]):
+    x: TypeX
+
+
+class ChildClassType(BaseClassType[TypeX], Generic[TypeX]):
+    pass
