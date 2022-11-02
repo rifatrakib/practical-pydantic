@@ -219,3 +219,24 @@ class ResponseConcrete(GenericModel, Generic[DataT]):
     @classmethod
     def __concrete_name__(cls: Type[Any], params: Tuple[Type[Any], ...]) -> str:
         return f"{params[0].__name__.title()}Response"
+
+
+T = TypeVar("T")
+
+
+class InnerT(GenericModel, Generic[T]):
+    inner: T
+
+
+class OuterT(GenericModel, Generic[T]):
+    outer: T
+    nested: InnerT[T]
+
+
+AT = TypeVar("AT")
+BT = TypeVar("BT")
+
+
+class RootModel(GenericModel, Generic[AT, BT]):
+    a: AT
+    b: BT

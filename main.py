@@ -87,3 +87,13 @@ async def read_subclass_model(data: UsageModel.ChildModel):
 @app.post("/model-concrete/", response_model=UsageModel.ResponseConcrete)
 async def read_concrete_model(data: UsageModel.ResponseConcrete):
     return data
+
+
+@app.post("nested/outer/", response_model=UsageModel.OuterT)
+async def read_nested_outer_model(data: UsageModel.OuterT):
+    return data
+
+
+@app.post("/models/root/", response_model=UsageModel.RootModel)
+async def read_root_model(data: UsageModel.RootModel):
+    return data
