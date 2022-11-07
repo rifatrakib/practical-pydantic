@@ -2,10 +2,9 @@ from typing import Generic, TypeVar, Optional, Tuple, Type, Any, List, Dict
 from pydantic.utils import GetterDict
 from pydantic.generics import GenericModel
 from pydantic import (
-    BaseModel, ValidationError, PydanticValueError,
-    Field, constr, conint, validator
+    BaseModel, PydanticValueError,
+    Field, constr, conint, validator, create_model,
 )
-from xml.etree.ElementTree import fromstring
 from sqlalchemy import Column, Integer, String, JSON
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.ext.declarative import declarative_base
@@ -240,3 +239,24 @@ BT = TypeVar("BT")
 class RootModel(GenericModel, Generic[AT, BT]):
     a: AT
     b: BT
+
+
+DynamicFooBar = create_model("DynamicFooBarModel", foo=(str, ...), bar=123)
+
+
+class StaticFooBarModel(BaseModel):
+    foo: str
+    bar: int = 123
+
+
+class FooModel(BaseModel):
+    foo: str
+    bar: int = 123
+
+
+BarModel = create_model(
+    "BarModel",
+    apple="russet",
+    banana="yellow",
+    __base__=FooModel,
+)

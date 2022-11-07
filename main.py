@@ -97,3 +97,18 @@ async def read_nested_outer_model(data: UsageModel.OuterT):
 @app.post("/models/root/", response_model=UsageModel.RootModel)
 async def read_root_model(data: UsageModel.RootModel):
     return data
+
+
+@app.post("/dynamic-foo-bar/", response_model=UsageModel.DynamicFooBar)
+async def read_dynamic_foo_bar_model(data: UsageModel.DynamicFooBar):
+    return data
+
+
+@app.post("/static-foo-bar/", response_model=UsageModel.StaticFooBarModel)
+async def read_static_foo_bar_model(data: UsageModel.StaticFooBarModel):
+    return data
+
+
+@app.post("/bar-model/", response_model=UsageModel.BarModel)
+async def read_bar_model(data: UsageModel.BarModel):
+    return data
