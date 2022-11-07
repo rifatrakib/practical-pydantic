@@ -117,3 +117,8 @@ async def read_bar_model(data: UsageModel.BarModel):
 @app.post("/dynamic-user/", response_model=UsageModel.DynamicUserModel)
 async def read_dynamic_user(data: UsageModel.DynamicUserModel):
     return data
+
+
+@app.post("/user-from-typed-dict/", response_model=UsageModel.UserTypedDictModel)
+async def read_user_typed_dict_model(data: UsageModel.UserTypedDictModel):
+    return data

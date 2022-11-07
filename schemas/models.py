@@ -1,9 +1,11 @@
+from typing_extensions import TypedDict
 from typing import Generic, TypeVar, Optional, Tuple, Type, Any, List, Dict
 from pydantic.utils import GetterDict
 from pydantic.generics import GenericModel
 from pydantic import (
     BaseModel, PydanticValueError,
-    Field, constr, conint, validator, create_model,
+    Field, constr, conint, validator,
+    create_model, create_model_from_typeddict,
 )
 from sqlalchemy import Column, Integer, String, JSON
 from sqlalchemy.dialects.postgresql import ARRAY
@@ -275,3 +277,15 @@ DynamicUserModel = create_model(
     username=(str, ...),
     __validators__=validators,
 )
+
+
+class TypedDictUser(TypedDict):
+    name: str
+    id: int
+
+
+class Config:
+    extra = "forbid"
+
+
+UserTypedDictModel = create_model_from_typeddict(TypedDictUser, __config__=Config)
