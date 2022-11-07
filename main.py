@@ -112,3 +112,8 @@ async def read_static_foo_bar_model(data: UsageModel.StaticFooBarModel):
 @app.post("/bar-model/", response_model=UsageModel.BarModel)
 async def read_bar_model(data: UsageModel.BarModel):
     return data
+
+
+@app.post("/dynamic-user/", response_model=UsageModel.DynamicUserModel)
+async def read_dynamic_user(data: UsageModel.DynamicUserModel):
+    return data

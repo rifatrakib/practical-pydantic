@@ -260,3 +260,18 @@ BarModel = create_model(
     banana="yellow",
     __base__=FooModel,
 )
+
+
+def username_alphanumeric(cls, v):
+    assert v.isalnum(), "must be alphanumeric"
+    return v
+
+
+validators = {"username_validator": validator("username")(username_alphanumeric)}
+
+
+DynamicUserModel = create_model(
+    "DynamicUserModel",
+    username=(str, ...),
+    __validators__=validators,
+)
