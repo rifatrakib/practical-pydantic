@@ -1,6 +1,7 @@
 from typing_extensions import TypedDict
 from typing import Generic, TypeVar, Optional, Tuple, Type, Any, List, Dict
 from pydantic.utils import GetterDict
+from pydantic.schema import schema
 from pydantic.generics import GenericModel
 from pydantic import (
     BaseModel, PydanticValueError,
@@ -289,3 +290,21 @@ class Config:
 
 
 UserTypedDictModel = create_model_from_typeddict(TypedDictUser, __config__=Config)
+
+
+class PetsRoot(BaseModel):
+    __root__: List[str]
+
+
+class PetsRootName(BaseModel):
+    __root__: Dict[str, str]
+
+
+class CustomizedPet(BaseModel):
+    __root__: List[str]
+    
+    def __iter__(self):
+        return iter(self.__root__)
+    
+    def __getitem__(self, item):
+        return self.__root__[item]

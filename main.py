@@ -122,3 +122,18 @@ async def read_dynamic_user(data: UsageModel.DynamicUserModel):
 @app.post("/user-from-typed-dict/", response_model=UsageModel.UserTypedDictModel)
 async def read_user_typed_dict_model(data: UsageModel.UserTypedDictModel):
     return data
+
+
+@app.post("/pets-root/", response_model=UsageModel.PetsRoot)
+async def read_pets_root(data: UsageModel.PetsRoot):
+    return data
+
+
+@app.post("/pets-root/", response_model=UsageModel.PetsRootName)
+async def read_pets_root(data: UsageModel.PetsRootName):
+    return data
+
+
+@app.post("/pets-root/", response_model=UsageModel.CustomizedPet)
+async def read_pets_root(data: UsageModel.CustomizedPet):
+    return data
