@@ -181,3 +181,39 @@ Arbitrary classes are processed by pydantic using the `GetterDict` class, which 
 You can also customise class validation using `root_validators` with `pre=True`. In this case your validator function will be passed a `GetterDict` instance which you may copy and modify.
 
 The `GetterDict` instance will be called for each field with a sentinel as a fallback (if no other default value is set). Returning this sentinel means that the field is missing. Any other value will be interpreted as the value of the field.
+
+
+#### Error Handling
+
+pydantic will raise `ValidationError` whenever it finds an error in the data it's validating.
+
+> ##### Note
+>
+> Validation code should not raise `ValidationError` itself, but rather raise `ValueError`, `TypeError` or `AssertionError` (or subclasses of `ValueError` or `TypeError`) which will be caught and used to populate `ValidationError`.
+
+One exception will be raised regardless of the number of errors found, that `ValidationError` will contain information about all the errors and how they happened. You can access these errors in several ways:
+
+* `e.errors()`: method will return list of errors found in the input data.
+
+* `e.json()`: method will return a JSON representation of `errors`.
+
+* `str(e)`: method will return a human readable representation of the errors.
+
+Each error object contains:
+
+* `loc`: the error's location as a list. The first item in the list will be the field where the error occurred, and if the field is a `sub-model`, subsequent items will be present to indicate the nested location of the error.
+
+* `type`: a computer-readable identifier of the error type.
+
+* `msg`: a human readable explanation of the error.
+
+* `ctx`: an optional object which contains values required to render the error message.
+
+
+##### Custom Errors
+
+In your custom data types or validators you should use `ValueError`, `TypeError` or `AssertionError` to raise errors.
+
+See `validators` for more details on use of the `@validator` decorator.
+
+You can also define your own error classes, which can specify a custom error code, message template, and context.
