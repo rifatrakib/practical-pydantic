@@ -47,3 +47,34 @@ assert user.__fields_set__ == {"id"}
 ```
 
 Either `.dict()` or `dict(user)` will provide a dict of fields, but `.dict()` can take numerous other arguments. This model is mutable so field values can be changed.
+
+
+##### Model properties
+
+The example above only shows the tip of the iceberg of what models can do. Models possess the following methods and attributes:
+
+* `dict()`: returns a dictionary of the model's fields and values; cf. `exporting models`
+
+* `json()`: returns a JSON string representation dict(); cf. `exporting models`
+
+* `copy()`: returns a copy (by default, shallow copy) of the model; cf. `exporting models`
+
+* `parse_obj()`: a utility for loading any object into a model with error handling if the object is not a dictionary; cf. `helper functions`
+
+* `parse_raw()`: a utility for loading strings of numerous formats; cf. `helper functions`
+
+* `parse_file()`: like parse_raw() but for file paths; cf. `helper functions`
+
+* `from_orm()`: loads data into a model from an arbitrary class; cf. `ORM mode`
+
+* `schema()`: returns a dictionary representing the model as JSON Schema; cf. `schema`
+
+* `schema_json()`: returns a JSON string representation of schema(); cf. `schema`
+
+* `construct()`: a class method for creating models without running validation; cf. `Creating models without validation`
+
+* `__fields_set__`: Set of names of fields which were set when the model instance was initialised
+
+* `__fields__`: a dictionary of the model's fields
+
+* `__config__`: the configuration class for the model, cf. `model config`
