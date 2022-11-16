@@ -217,3 +217,47 @@ In your custom data types or validators you should use `ValueError`, `TypeError`
 See `validators` for more details on use of the `@validator` decorator.
 
 You can also define your own error classes, which can specify a custom error code, message template, and context.
+
+
+#### Helper Functions
+
+Pydantic provides three `classmethod` helper functions on models for parsing data:
+
+* `parse_obj`: this is very similar to the `__init__` method of the model, except it takes a dict rather than keyword arguments. If the object passed is not a dict a `ValidationError` will be raised.
+
+* `parse_raw`: this takes a str or bytes and parses it as json, then passes the result to `parse_obj`. Parsing pickle data is also supported by setting the `content_type` argument appropriately.
+
+* `parse_file`: this takes in a file path, reads the file and passes the contents to `parse_raw`. If `content_type` is omitted, it is inferred from the file's extension.
+
+> ##### Warning
+>
+> To quote the official `pickle` docs, "The pickle module is not secure against erroneous or maliciously constructed data. Never unpickle data received from an untrusted or unauthenticated source."
+
+> ##### Info
+>
+> Because it can result in arbitrary code execution, as a security measure, you need to explicitly pass allow_pickle to the parsing function in order to load pickle data.
+
+
+##### Creating models without validation
+
+pydantic also provides the `construct()` method which allows models to be created without validation this can be useful when data has already been validated or comes from a trusted source and you want to create a model as efficiently as possible (`construct()` is generally around 30x faster than creating a model with full validation).
+
+> ##### Warning
+>
+> construct() does not do any validation, meaning it can create models which are invalid. You should only ever use the construct() method with data which has already been validated, or you trust.
+
+```
+class NoValidationUser(BaseModel):
+    id: int
+    age: int
+    name: str = "John Doe"
+
+
+new_user = NoValidationUser.construct(_fields_set=fields_set, **user_data)
+print(repr(new_user))
+print(new_user.__fields_set__)
+```
+
+The `_fields_set` keyword argument to `construct()` is optional, but allows you to be more precise about which fields were originally set and which weren't. If it's omitted `__fields_set__` will just be the keys of the data provided.
+
+For example, in the example above, if `_fields_set` was not provided, `new_user.__fields_set__` would be `{"id", "age", "name"}`.
