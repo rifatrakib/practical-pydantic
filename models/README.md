@@ -78,3 +78,8 @@ The example above only shows the tip of the iceberg of what models can do. Model
 * `__fields__`: a dictionary of the model's fields
 
 * `__config__`: the configuration class for the model, cf. `model config`
+
+
+#### Recursive Models
+
+More complex hierarchical data structures can be defined using models themselves as types in annotations. For self-referencing models, see `postponed annotations`.
