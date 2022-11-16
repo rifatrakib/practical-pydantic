@@ -83,3 +83,101 @@ The example above only shows the tip of the iceberg of what models can do. Model
 #### Recursive Models
 
 More complex hierarchical data structures can be defined using models themselves as types in annotations. For self-referencing models, see `postponed annotations`.
+
+
+#### ORM Mode (aka Arbitrary Class Instances)
+
+Pydantic models can be created from arbitrary class instances to support models that map to ORM objects. To do this:
+
+1. The `Config` property `orm_mode` must be set to `True`.
+
+2. The special constructor `from_orm` must be used to create the model instance.
+
+The example here uses `SQLAlchemy`, but the same approach should work for any ORM.
+
+```
+class CompanyOrm(Base):
+    __tablename__ = 'companies'
+    id = Column(Integer, primary_key=True, nullable=False)
+    public_key = Column(String(20), index=True, nullable=False, unique=True)
+    name = Column(String(63), unique=True)
+    domains = Column(ARRAY(String(255)))
+
+
+class CompanyModel(BaseModel):
+    id: int
+    public_key: constr(max_length=20)
+    name: constr(max_length=63)
+    domains: List[constr(max_length=255)]
+
+    class Config:
+        orm_mode = True
+```
+
+
+##### Reserved names
+
+You may want to name a Column after a reserved SQLAlchemy field. In that case, Field aliases will be convenient.
+
+```
+class MyModel(BaseModel):
+    metadata: Dict[str, str] = Field(alias="metadata_")
+
+    class Config:
+        orm_mode = True
+
+
+class SQLModel(Base):
+    __tablename__ = "my_table"
+    id = Column("id", Integer, primary_key=True)
+    metadata_ = Column("metadata", JSON)
+```
+
+> ##### Note
+>
+> The example above works because aliases have priority over field names for field population. Accessing `SQLModel`'s `metadata` attribute would lead to a `ValidationError`.
+
+
+##### Recursive ORM models
+
+ORM instances will be parsed with `from_orm` recursively as well as at the top level. Here a vanilla class is used to demonstrate the principle, but any ORM class could be used instead.
+
+```
+class PetCls:
+    def __init__(self, *, name: str, species: str):
+        self.name = name
+        self.species = species
+
+
+class PersonCls:
+    def __init__(self, *, name: str, age: float = None, pets: List[PetCls]):
+        self.name = name
+        self.age = age
+        self.pets = pets
+
+
+class Pet(BaseModel):
+    name: str
+    species: str
+
+    class Config:
+        orm_mode = True
+
+
+class Person(BaseModel):
+    name: str
+    age: float = None
+    pets: List[Pet]
+
+    class Config:
+        orm_mode = True
+```
+
+
+##### Data binding
+
+Arbitrary classes are processed by pydantic using the `GetterDict` class, which attempts to provide a dictionary-like interface to any class. You can customise how this works by setting your own sub-class of `GetterDict` as the value of `Config.getter_dict` (see `config`).
+
+You can also customise class validation using `root_validators` with `pre=True`. In this case your validator function will be passed a `GetterDict` instance which you may copy and modify.
+
+The `GetterDict` instance will be called for each field with a sentinel as a fallback (if no other default value is set). Returning this sentinel means that the field is missing. Any other value will be interpreted as the value of the field.
