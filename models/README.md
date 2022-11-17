@@ -325,3 +325,18 @@ Pydantic also treats `GenericModel` similarly to how it treats built-in generic 
 * You can parametrize models with one or more bounded parameters to add subclass checks
 
 Also, like `List` and `Dict`, any parameters specified using a `TypeVar` can later be substituted with concrete types.
+
+
+#### Dynamic model creation
+
+There are some occasions where the shape of a model is not known until runtime. For this pydantic provides the `create_model` method to allow models to be created on the fly.
+
+```
+DynamicFoobarModel = create_model("DynamicFoobarModel", foo=(str, ...), bar=123)
+
+class StaticFoobarModel(BaseModel):
+    foo: str
+    bar: int = 123
+```
+
+Here `StaticFoobarModel` and `DynamicFoobarModel` are identical. Fields are defined by either a tuple of the form `(<type>, <default value>)` or just a default value. The special key word arguments `__config__` and `__base__` can be used to customise the new model. This includes extending a base model with extra fields. You can also add validators by passing a dict to the `__validators__` argument.
