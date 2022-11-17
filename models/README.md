@@ -340,3 +340,8 @@ class StaticFoobarModel(BaseModel):
 ```
 
 Here `StaticFoobarModel` and `DynamicFoobarModel` are identical. Fields are defined by either a tuple of the form `(<type>, <default value>)` or just a default value. The special key word arguments `__config__` and `__base__` can be used to customise the new model. This includes extending a base model with extra fields. You can also add validators by passing a dict to the `__validators__` argument.
+
+
+#### Model creation from `NamedTuple` or `TypedDict`
+
+Sometimes you already use in your application classes that inherit from `NamedTuple` or `TypedDict` and you don't want to duplicate all your information to have a `BaseModel`. For this pydantic provides `create_model_from_namedtuple` and `create_model_from_typeddict` methods. Those methods have the exact same keyword arguments as `create_model`.
