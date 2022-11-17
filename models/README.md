@@ -345,3 +345,24 @@ Here `StaticFoobarModel` and `DynamicFoobarModel` are identical. Fields are defi
 #### Model creation from `NamedTuple` or `TypedDict`
 
 Sometimes you already use in your application classes that inherit from `NamedTuple` or `TypedDict` and you don't want to duplicate all your information to have a `BaseModel`. For this pydantic provides `create_model_from_namedtuple` and `create_model_from_typeddict` methods. Those methods have the exact same keyword arguments as `create_model`.
+
+
+#### Custom Root Types
+
+Pydantic models can be defined with a custom root type by declaring the `__root__` field.
+
+The root type can be any type supported by pydantic, and is specified by the type hint on the `__root__` field. The root value can be passed to the model `__init__` via the `__root__` keyword argument, or as the first and only argument to `parse_obj`.
+
+If you call the `parse_obj` method for a model with a custom root type with a dict as the first argument, the following logic is used:
+
+* If the custom root type is a mapping type (eg., `Dict` or `Mapping`), the argument itself is always validated against the custom root type.
+
+* For other custom root types, if the dict has precisely one key with the value `__root__`, the corresponding value will be validated against the custom root type.
+
+* Otherwise, the dict itself is validated against the custom root type.
+
+> ##### Warning
+>
+> Calling the `parse_obj` method on a dict with the single key `"__root__"` for non-mapping custom root types is currently supported for backwards compatibility, but is not recommended and may be dropped in a future version.
+
+If you want to access items in the `__root__` field directly or to iterate over the items, you can implement custom `__iter__` and `__getitem__` functions, as shown in the following example.
