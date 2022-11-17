@@ -261,3 +261,67 @@ print(new_user.__fields_set__)
 The `_fields_set` keyword argument to `construct()` is optional, but allows you to be more precise about which fields were originally set and which weren't. If it's omitted `__fields_set__` will just be the keys of the data provided.
 
 For example, in the example above, if `_fields_set` was not provided, `new_user.__fields_set__` would be `{"id", "age", "name"}`.
+
+
+#### Generic Models
+
+Pydantic supports the creation of generic models to make it easier to reuse a common model structure.
+
+In order to declare a generic model, you perform the following steps:
+
+* Declare one or more `typing.TypeVar` instances to use to parameterize your model.
+
+* Declare a pydantic model that inherits from `pydantic.generics.GenericModel` and `typing.Generic`, where you pass the `TypeVar` instances as parameters to `typing.Generic`.
+
+* Use the `TypeVar` instances as annotations where you will want to replace them with other types or pydantic models.
+
+Here is an example using `GenericModel` to create an easily-reused HTTP response payload wrapper.
+
+```
+DataT = TypeVar("DataT")
+
+
+class Error(BaseModel):
+    code: int
+    message: str
+
+
+class DataModel(BaseModel):
+    numbers: List[int]
+    people: List[str]
+
+
+class Response(GenericModel, Generic[DataT]):
+    data: Optional[DataT]
+    error: Optional[Error]
+
+    @validator("error", always=True)
+    def check_consistency(cls, v, values):
+        if v is not None and values["data"] is not None:
+            raise ValueError("must not provide both data and error")
+        if v is None and values.get("data") is None:
+            raise ValueError("must provide data or error")
+        return v
+```
+
+If you set `Config` or make use of `validator` in your generic model definition, it is applied to concrete subclasses in the same way as when inheriting from `BaseModel`. Any methods defined on your generic class will also be inherited.
+
+Pydantic's generics also integrate properly with mypy, so you get all the type checking you would expect mypy to provide if you were to declare the type without using `GenericModel`.
+
+> ##### Note
+>
+> Internally, pydantic uses create_model to generate a (cached) concrete BaseModel at runtime, so there is essentially zero overhead introduced by making use of GenericModel.
+
+To inherit from a GenericModel without replacing the `TypeVar` instance, a class must also inherit from `typing.Generic`. You can also create a generic subclass of a `GenericModel` that partially or fully replaces the type parameters in the superclass.
+
+If the name of the concrete subclasses is important, you can also override the default behavior.
+
+Using the same TypeVar in nested models allows you to enforce typing relationships at different points in your model.
+
+Pydantic also treats `GenericModel` similarly to how it treats built-in generic types like `List` and `Dict` when it comes to leaving them unparameterized, or using bounded `TypeVar` instances:
+
+* If you don't specify parameters before instantiating the generic model, they will be treated as `Any`
+
+* You can parametrize models with one or more bounded parameters to add subclass checks
+
+Also, like `List` and `Dict`, any parameters specified using a `TypeVar` can later be substituted with concrete types.
