@@ -366,3 +366,14 @@ If you call the `parse_obj` method for a model with a custom root type with a di
 > Calling the `parse_obj` method on a dict with the single key `"__root__"` for non-mapping custom root types is currently supported for backwards compatibility, but is not recommended and may be dropped in a future version.
 
 If you want to access items in the `__root__` field directly or to iterate over the items, you can implement custom `__iter__` and `__getitem__` functions, as shown in the following example.
+
+
+#### Faux Immutability
+
+Models can be configured to be immutable via `allow_mutation = False`. When this is set, attempting to change the values of instance attributes will raise errors. See `model config` for more details on `Config`.
+
+> ##### Warning
+>
+> _Immutability_ in Python is __never strict__. If developers are _determined/stupid_ they __can always modify__ a so-called `"immutable"` object.
+
+Trying to change `a` caused an error, and `a` remains unchanged. However, the dict `b` is mutable, and the immutability of `foobar` doesn't stop `b` from being changed.
