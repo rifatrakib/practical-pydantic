@@ -377,3 +377,8 @@ Models can be configured to be immutable via `allow_mutation = False`. When this
 > _Immutability_ in Python is __never strict__. If developers are _determined/stupid_ they __can always modify__ a so-called `"immutable"` object.
 
 Trying to change `a` caused an error, and `a` remains unchanged. However, the dict `b` is mutable, and the immutability of `foobar` doesn't stop `b` from being changed.
+
+
+#### Abstract Base Classes
+
+Pydantic models can be used alongside Python's `Abstract Base Classes` (ABCs).
