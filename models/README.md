@@ -382,3 +382,24 @@ Trying to change `a` caused an error, and `a` remains unchanged. However, the di
 #### Abstract Base Classes
 
 Pydantic models can be used alongside Python's `Abstract Base Classes` (ABCs).
+
+
+#### Field Ordering
+
+Field order is important in models for the following reasons:
+
+* validation is performed in the order fields are defined; `fields validators` can access the values of earlier fields, but not later ones
+
+* field order is preserved in the model `schema`
+
+* field order is preserved in `validation errors`
+
+* field order is preserved by `.dict()` and `.json()` etc.
+
+As of v1.0 all fields with annotations (whether annotation-only or with a default value) will precede all fields without an annotation. Within their respective groups, fields remain in the order they were defined.
+
+> ##### Warning
+>
+> As demonstrated by the example above, combining the use of annotated and non-annotated fields in the same model can result in surprising field orderings. (This is due to limitations of Python)
+>
+> Therefore, __we recommend adding type annotations to all fields__, even when a default value would determine the type by itself to guarantee field order is preserved.
