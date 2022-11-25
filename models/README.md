@@ -440,3 +440,8 @@ Where `Field` refers to the `field function`.
 > ##### Warning
 >
 > The `default_factory` expects the field type to be set.
+
+
+#### Automatically excluded attributes
+
+Class variables which begin with an underscore and attributes annotated with `typing.ClassVar` will be automatically excluded from the model.
