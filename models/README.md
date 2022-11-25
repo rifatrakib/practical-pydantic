@@ -445,3 +445,14 @@ Where `Field` refers to the `field function`.
 #### Automatically excluded attributes
 
 Class variables which begin with an underscore and attributes annotated with `typing.ClassVar` will be automatically excluded from the model.
+
+
+#### Private model attributes
+
+If you need to vary or manipulate internal attributes on instances of the model, you can declare them using `PrivateAttr`.
+
+Private attribute names must start with underscore to prevent conflicts with model fields: both `_attr` and `__attr__` are supported.
+
+If `Config.underscore_attrs_are_private` is `True`, any non-ClassVar underscore attribute will be treated as private.
+
+Upon class creation pydantic constructs `__slots__` filled with private attributes.
