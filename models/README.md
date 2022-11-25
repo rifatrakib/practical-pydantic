@@ -403,3 +403,40 @@ As of v1.0 all fields with annotations (whether annotation-only or with a defaul
 > As demonstrated by the example above, combining the use of annotated and non-annotated fields in the same model can result in surprising field orderings. (This is due to limitations of Python)
 >
 > Therefore, __we recommend adding type annotations to all fields__, even when a default value would determine the type by itself to guarantee field order is preserved.
+
+
+#### Required Fields
+
+To declare a field as required, you may declare it using just an annotation, or you may use an ellipsis (`...`) as the value.
+
+Where `Field` refers to the `field function`.
+
+Here `a`, `b` and `c` are all required. However, use of the ellipses in `b` will not work well with `mypy`, and as of v1.0 should be avoided in most cases.
+
+
+##### Required Optional fields
+
+> ##### Warning
+>
+> Since version v1.2 annotation only nullable (`Optional[...]`, `Union[None, ...]` and `Any`) fields and nullable fields with an ellipsis (`...`) as the default value, no longer mean the same thing.
+>
+> In some situations this may cause v1.2 to not be entirely backwards compatible with earlier v1.* releases.
+
+If you want to specify a field that can take a `None` value while still being required, you can use `Optional` with `...`.
+
+In this model, `a`, `b`, and `c` can take `None` as a value. But `a` is optional, while `b` and `c` are required. `b` and `c` require a value, even if the value is `None`.
+
+
+#### Field with dynamic default value
+
+When declaring a field with a default value, you may want it to be dynamic (i.e. different for each model). To do this, you may want to use a `default_factory`.
+
+> ##### In Beta
+>
+> The `default_factory` argument is in __beta__, it has been added to pydantic in v1.5 on a __provisional basis__. It may change significantly in future releases and its signature or behaviour will not be concrete until v2. Feedback from the community while it's still provisional would be extremely useful.
+
+Where `Field` refers to the `field function`.
+
+> ##### Warning
+>
+> The `default_factory` expects the field type to be set.
