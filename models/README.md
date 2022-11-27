@@ -483,3 +483,8 @@ If a field's alias and name are both invalid identifiers, a `**data` argument wi
 > ##### Note
 >
 > Types in the model signature are the same as declared in model annotations, not necessarily all the types that can actually be provided to that field.
+
+
+#### Structural pattern matching
+
+`pydantic` supports structural pattern matching for models, as introduced by `PEP 636` in Python 3.10. A match-case statement may seem as if it creates a new model, but don't be fooled; it is just syntactic sugar for getting an attribute and either comparing it or declaring and initializing it.
