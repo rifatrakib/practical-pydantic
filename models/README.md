@@ -470,3 +470,16 @@ Pydantic also includes two similar standalone functions called `parse_file_as` a
 #### Data Conversion
 
 `pydantic` may cast input data to force it to conform to model field types, and in some cases this may result in a loss of information. This is a deliberate decision of pydantic, and in general it's the most useful approach. Nevertheless, `strict type checking` is partially supported.
+
+
+#### Model signature
+
+All pydantic models will have their signature generated based on their fields. An accurate signature is useful for introspection purposes and libraries like `FastAPI` or `hypothesis`. The generated signature will also respect custom `__init__` functions.
+
+To be included in the signature, a field's alias or name must be a valid Python identifier. pydantic prefers aliases over names, but may use field names if the alias is not a valid Python identifier.
+
+If a field's alias and name are both invalid identifiers, a `**data` argument will be added. In addition, the `**data` argument will always be present in the signature if `Config.extra` is `Extra.allow`.
+
+> ##### Note
+>
+> Types in the model signature are the same as declared in model annotations, not necessarily all the types that can actually be provided to that field.
