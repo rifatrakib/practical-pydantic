@@ -456,3 +456,12 @@ Private attribute names must start with underscore to prevent conflicts with mod
 If `Config.underscore_attrs_are_private` is `True`, any non-ClassVar underscore attribute will be treated as private.
 
 Upon class creation pydantic constructs `__slots__` filled with private attributes.
+
+
+#### Parsing data into a specified type
+
+Pydantic includes a standalone utility function `parse_obj_as` that can be used to apply the parsing logic used to populate pydantic models in a more ad-hoc way. This function behaves similarly to `BaseModel.parse_obj`, but works with arbitrary pydantic-compatible types. This is especially useful when you want to parse results into a type that is not a direct subclass of `BaseModel`.
+
+This function is capable of parsing data into any of the types pydantic can handle as fields of a `BaseModel`.
+
+Pydantic also includes two similar standalone functions called `parse_file_as` and `parse_raw_as`, which are analogous to `BaseModel.parse_file` and `BaseModel.parse_raw`.
