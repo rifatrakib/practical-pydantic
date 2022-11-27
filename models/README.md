@@ -465,3 +465,8 @@ Pydantic includes a standalone utility function `parse_obj_as` that can be used 
 This function is capable of parsing data into any of the types pydantic can handle as fields of a `BaseModel`.
 
 Pydantic also includes two similar standalone functions called `parse_file_as` and `parse_raw_as`, which are analogous to `BaseModel.parse_file` and `BaseModel.parse_raw`.
+
+
+#### Data Conversion
+
+`pydantic` may cast input data to force it to conform to model field types, and in some cases this may result in a loss of information. This is a deliberate decision of pydantic, and in general it's the most useful approach. Nevertheless, `strict type checking` is partially supported.
