@@ -131,3 +131,50 @@ But if you have a generator that you don't want to be consumed, e.g. an infinite
 ##### Validating the first value
 
 You can create a `validator` to validate the first value in an infinite generator and still not consume it entirely.
+
+
+#### Unions
+
+The `Union` type allows a model attribute to accept different types.
+
+> ##### Info
+>
+> You may get unexpected coercion with `Union`; see below. Know that you can also make the check slower but stricter by using `Smart Union`.
+
+However, as can be seen above, pydantic will attempt to 'match' any of the types defined under `Union` and will use the first one that matches. In the above example the `id` of `user_3` was defined as a `uuid.UUID` class (which is defined under the attribute's `Union` annotation) but as the `uuid.UUID` can be marshalled into an `int` it chose to match against the `int` type and disregarded the other types.
+
+> ##### Warning
+>
+> `typing.Union` also ignores order when defined, so `Union[int, float] == Union[float, int]` which can lead to unexpected behaviour when combined with matching based on the Union type order inside other type definitions, such as `List` and `Dict` types (because Python treats these definitions as singletons). For example, `Dict[str, Union[int, float]] == Dict[str, Union[float, int]]` with the order based on the first time it was defined. Please note that this can also be `affected by third party libraries` and their internal type definitions and the import orders.
+
+As such, it is recommended that, when defining `Union` annotations, the most specific type is included first and followed by less specific types. In the above example, the `UUID` class should precede the `int` and `str` classes to preclude the unexpected representation.
+
+> ##### Tip
+>
+> The type `Optional[x]` is a shorthand for `Union[x, None]`. `Optional[x]` can also be used to specify a required field that can take `None` as a value.
+
+
+##### Discriminated Unions (a.k.a. Tagged Unions)
+
+When `Union` is used with multiple submodels, you sometimes know exactly which submodel needs to be checked and validated and want to enforce this. To do that you can set the same field - let's call it `my_discriminator` - in each of the submodels with a discriminated value, which is one (or many) `Literal` value(s). For your `Union`, you can set the discriminator in its value: `Field(discriminator='my_discriminator')`.
+
+Setting a discriminated union has many benefits:
+
+* validation is faster since it is only attempted against one model.
+
+* only one explicit error is raised in case of failure.
+
+* the generated JSON schema implements the `associated OpenAPI specification`.
+
+> ##### Note
+>
+> Using the `Annotated Fields syntax` can be handy to regroup the `Union` and `discriminator` information. See below for an example!
+
+> Warning
+>
+> Discriminated unions cannot be used with only a single variant, such as `Union[Cat]`. Python changes `Union[T]` into `T` at interpretation time, so it is not possible for pydantic to distinguish fields of `Union[T]` from `T`.
+
+
+##### Nested Discriminated Unions
+
+Only one discriminator can be set for a field but sometimes you want to combine multiple discriminators. In this case you can always create "intermediate" models with `__root__` and add your discriminator.
