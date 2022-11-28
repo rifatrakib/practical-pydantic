@@ -111,3 +111,23 @@ pydantic supports many common types from the Python standard library. If you nee
 #### Typing Iterables
 
 _pydantic_ uses standard library `typing` types as defined in PEP 484 to define complex objects.
+
+
+#### Infinite Generators
+
+If you have a generator you can use `Sequence` as described above. In that case, the generator will be consumed and stored on the model as a list and its values will be validated with the sub-type of `Sequence` (e.g. `int` in `Sequence[int]`).
+
+But if you have a generator that you don't want to be consumed, e.g. an infinite generator or a remote data loader, you can define its type with `Iterable`.
+
+> ##### Warning
+>
+> `Iterable` fields only perform a simple check that the argument is iterable and won't be consumed. No validation of their values is performed as it cannot be done without consuming the iterable.
+
+> Tip
+>
+> If you want to validate the values of an infinite generator you can create a separate model and use it while consuming the generator, reporting the validation errors as appropriate. pydantic can't validate the values automatically for you because it would require consuming the infinite generator.
+
+
+##### Validating the first value
+
+You can create a `validator` to validate the first value in an infinite generator and still not consume it entirely.
