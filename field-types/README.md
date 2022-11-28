@@ -106,3 +106,8 @@ pydantic supports many common types from the Python standard library. If you nee
 * `uuid.UUID` - strings and bytes (converted to strings) are passed to `UUID(v)`, with a fallback to `UUID(bytes=v)` for `bytes` and `bytearray`; see `Pydantic Types` for other stricter UUID types.
 
 * `ByteSize` - converts a bytes string with units to bytes.
+
+
+#### Typing Iterables
+
+_pydantic_ uses standard library `typing` types as defined in PEP 484 to define complex objects.
