@@ -240,3 +240,12 @@ A standard `bool` field will raise a `ValidationError` if the value is not one o
 > ##### Note
 >
 > If you want stricter boolean logic (e.g. a field which only permits `True` and `False`) you can use `StrictBool`.
+
+
+#### Callable
+
+Fields can also be of type `Callable`.
+
+> ##### Warning
+>
+> Callable fields only perform a simple check that the argument is callable; no validation of arguments, their types, or the return type is performed.
