@@ -222,3 +222,21 @@ Only one discriminator can be set for a field but sometimes you want to combine 
 
     * `[-][DD ][HH:MM]SS[.ffffff]`
     * `[±]P[DD]DT[HH]H[MM]M[SS]S` (ISO 8601)
+
+
+#### Booleans
+
+> ##### Warning
+>
+> The logic for parsing `bool` fields has changed as of version **v1.0**. Prior to **v1.0**, `bool` parsing never failed, leading to some unexpected results. The new logic is described below.
+
+A standard `bool` field will raise a `ValidationError` if the value is not one of the following:
+
+* A valid boolean (i.e. `True` or `False`),
+* The integers `0` or `1`,
+* a `str` which when converted to lower case is one of `"0", "off", "f", "false", "n", "no", "1", "on", "t", "true", "y", "yes"`
+* a `bytes` which is valid (per the previous rule) when decoded to `str`
+
+> ##### Note
+>
+> If you want stricter boolean logic (e.g. a field which only permits `True` and `False`) you can use `StrictBool`.
