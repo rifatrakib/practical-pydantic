@@ -178,3 +178,8 @@ Setting a discriminated union has many benefits:
 ##### Nested Discriminated Unions
 
 Only one discriminator can be set for a field but sometimes you want to combine multiple discriminators. In this case you can always create "intermediate" models with `__root__` and add your discriminator.
+
+
+#### Enums and Choices
+
+*pydantic* uses Python's standard `enum` classes to define choices.
