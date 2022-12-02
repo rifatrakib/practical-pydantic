@@ -256,3 +256,8 @@ Fields can also be of type `Callable`.
 *pydantic* supports the use of `Type[T]` to specify that a field may only accept classes (not instances) that are subclasses of `T`.
 
 You may also use `Type` to specify that any class is allowed.
+
+
+#### TypeVar
+
+`TypeVar` is supported either unconstrained, constrained or with a bound.
