@@ -274,3 +274,14 @@ _pydantic_ supports the use of `typing.Literal` (or `typing_extensions.Literal` 
 One benefit of this field type is that it can be used to check for equality with one or more specific values without needing to declare custom validators.
 
 With proper ordering in an annotated `Union`, you can use this to parse types of decreasing specificity.
+
+
+#### Annotated Types
+
+* `NamedTuple`
+
+* `TypedDict`
+
+> ##### Note
+>
+> This is a new feature of the Python standard library as of Python 3.8. Prior to Python 3.8, it requires the `typing-extensions` package. But required and optional fields are properly differentiated only since Python 3.9. We therefore recommend using `typing-extensions` with Python 3.8 as well.
