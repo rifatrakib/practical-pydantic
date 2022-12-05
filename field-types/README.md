@@ -261,3 +261,16 @@ You may also use `Type` to specify that any class is allowed.
 #### TypeVar
 
 `TypeVar` is supported either unconstrained, constrained or with a bound.
+
+
+#### Literal Type
+
+> ##### Note
+>
+> This is a new feature of the Python standard library as of Python 3.8; prior to Python 3.8, it requires the `typing-extensions` package.
+
+_pydantic_ supports the use of `typing.Literal` (or `typing_extensions.Literal` prior to Python 3.8) as a lightweight way to specify that a field may accept only specific literal values.
+
+One benefit of this field type is that it can be used to check for equality with one or more specific values without needing to declare custom validators.
+
+With proper ordering in an annotated `Union`, you can use this to parse types of decreasing specificity.
