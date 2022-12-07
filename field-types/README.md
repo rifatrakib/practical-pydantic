@@ -285,3 +285,94 @@ With proper ordering in an annotated `Union`, you can use this to parse types of
 > ##### Note
 >
 > This is a new feature of the Python standard library as of Python 3.8. Prior to Python 3.8, it requires the `typing-extensions` package. But required and optional fields are properly differentiated only since Python 3.9. We therefore recommend using `typing-extensions` with Python 3.8 as well.
+
+
+#### Pydantic Types
+
+_pydantic_ also provides a variety of other useful types:
+
+* `FilePath`: like `Path`, but the path must exist and be a file.
+
+* `DirectoryPath`: like `Path`, but the path must exist and be a directory.
+
+* `PastDate`: like `date`, but the date should be in the past.
+
+* `FutureDate`: like `date`, but the date should be in the future.
+
+* `EmailStr`: requires `email-validator` to be installed; the input string must be a valid email address, and the output is a simple string.
+
+* `NameEmail`: requires `email-validator` to be installed; the input string must be either a valid email address or in the format `Fred Bloggs <fred.bloggs@example.com>`, and the output is a `NameEmail` object which has two properties: `name` and `email`. For `Fred Bloggs <fred.bloggs@example.com>` the name would be `"Fred Bloggs"`; for `fred.bloggs@example.com` it would be `"fred.bloggs"`.
+
+* `PyObject`: expects a string and loads the Python object importable at that dotted path; e.g. if `'math.cos'` was provided, the resulting field value would be the function `cos`.
+
+* `Color`: for parsing HTML and CSS colors.
+
+* `Json`: a special type wrapper which loads JSON before parsing.
+
+* `PaymentCardNumber`: for parsing and validating payment cards.
+
+* `AnyUrl`: any URL.
+
+* `AnyHttpUrl`: an HTTP URL.
+
+* `HttpUrl`: a stricter HTTP URL.
+
+* `FileUrl`: a file path URL.
+
+* `PostgresDsn`: a postgres DSN style URL.
+
+* `CockroachDsn`: a cockroachdb DSN style URL.
+
+* `RabbitMqDsn`: an `AMQP` DSN style URL as used by RabbitMQ, StormMQ, ActiveMQ etc.
+
+* `RedisDsn`: a redis DSN style URL.
+
+* `MongoDsn`: a MongoDB DSN style URL.
+
+* `KafkaDsn`: a kafka DSN style URL.
+
+* `stricturl`: a type method for arbitrary URL constraints.
+
+* `UUID1`: requires a valid UUID of type 1.
+
+* `UUID3`: requires a valid UUID of type 3.
+
+* `UUID4`: requires a valid UUID of type 4.
+
+* `UUID5`: requires a valid UUID of type 5.
+
+* `SecretBytes`: bytes where the value is kept partially secret.
+
+* `SecretStr`: string where the value is kept partially secret.
+
+* `IPvAnyAddress`: allows either an `IPv4Address` or an `IPv6Address`.
+
+* `IPvAnyInterface`: allows either an `IPv4Interface` or an `IPv6Interface`.
+
+* `IPvAnyNetwork`: allows either an `IPv4Network` or an `IPv6Network`.
+
+* `NegativeFloat`: allows a float which is negative; uses standard `float` parsing then checks the value is less than 0.
+
+* `NegativeInt`: allows a int which is negative; uses standard `int` parsing then checks the value is less than 0.
+
+* `PositiveFloat`: allows a float which is negative; uses standard `float` parsing then checks the value is greater than 0.
+
+* `PositiveInt`: allows a int which is negative; uses standard `int` parsing then checks the value is greater than 0.
+
+* `conbytes`: type method for constraining bytes.
+
+* `condecimal`: type method for constraining Decimals.
+
+* `confloat`: type method for constraining floats.
+
+* `conint`: type method for constraining ints.
+
+* `condate`: type method for constraining dates.
+
+* `conlist`: type method for constraining lists.
+
+* `conset`: type method for constraining sets.
+
+* `confrozenset`: type method for constraining frozen sets.
+
+* `constr`: type method for constraining strs.
