@@ -376,3 +376,98 @@ _pydantic_ also provides a variety of other useful types:
 * `confrozenset`: type method for constraining frozen sets.
 
 * `constr`: type method for constraining strs.
+
+
+#### URLs
+
+For URI/URL validation the following types are available:
+
+* `AnyUrl`: any scheme allowed, TLD not required, host required.
+
+* `AnyHttpUrl`: scheme `http` or `https`, TLD not required, host required.
+
+* `HttpUrl`: scheme `http` or `https`, TLD required, host required, max length 2083.
+
+* `FileUrl`: scheme `file`, host not required.
+
+* `PostgresDsn`: user info required, TLD not required, host required, `PostgresDsn` supports multiple hosts. The following schemes are supported:
+
+    * postgres
+    * postgresql
+    * postgresql+asyncpg
+    * postgresql+pg8000
+    * postgresql+psycopg2
+    * postgresql+psycopg2cffi
+    * postgresql+py-postgresql
+    * postgresql+pygresql
+
+* `CockroachDsn`: scheme `cockroachdb`, user info required, TLD not required, host required. Also, its supported DBAPI dialects:
+
+    * cockroachdb+asyncpg
+    * cockroachdb+psycopg2
+
+* `AmqpDsn`: schema `amqp` or `amqps`, user info not required, TLD not required, host not required.
+
+* `RedisDsn`: scheme `redis` or `rediss`, user info not required, tld not required, host not required. (CHANGED: user info `rediss://:pass@localhost`)
+
+* `MongoDsn` : scheme `mongodb`, user info not required, database name not required, port not required from __v1.6__ onwards), user info may be passed without user part.
+
+* `stricturl`: method with the following keyword arguments: - `strip_whitespace: bool = True` - `min_length: int = 1` - `max_length: int = 2 ** 16` - `tld_required: bool = True` - `host_required: bool = True` - `allowed_schemes: Optional[Set[str]] = None`.
+
+
+> ##### Warning
+>
+> In V1.10.0 and v1.10.1 `stricturl` also took an optional `quote_plus` argument and URL components were percent encoded in some cases.
+
+The above types (which all inherit from `AnyUrl`) will attempt to give descriptive errors when invalid URLs are provided.
+
+If you require a custom URI/URL type, it can be created in a similar way to the types defined above.
+
+
+##### URL Properties
+
+Assuming an input URL of `http://samuel:pass@example.com:8000/the/path/?query=here#fragment=is;this=bit`, the above types export the following properties:
+
+* `scheme`: always set - the url scheme (`http` above)
+
+* `host`: always set - the url host (`example.com` above)
+
+* `host_type`: always set - describes the type of host, either:
+
+    * `domain`: e.g. `example.com`,
+    * `int_domain`: international domain, e.g. `exampl£e.org`,
+    * `ipv4`: an IP V4 address, e.g. `127.0.0.1`, or
+    * `ipv6`: an IP V6 address, e.g. `2001:db8:ff00:42`
+
+* `user`: optional - the username if included (`samuel` above)
+
+* `password`: optional - the password if included (`pass` above)
+
+* `tld`: optional - the top level domain (`com` above), __Note: this will be wrong for any two-level domain, e.g. "co.uk"__. You'll need to implement your own list of TLDs if you require full TLD validation
+
+* `port`: optional - the port (`8000` above)
+
+* `path`: optional - the path (`/the/path/` above)
+
+* `query`: optional - the URL query (aka GET arguments or "search string") (`query=here` above)
+
+* `fragment`: optional - the fragment (`fragment=is;this=bit` above)
+
+If further validation is required, these properties can be used by validators to enforce specific behaviour.
+
+
+##### International Domains
+
+"International domains" (e.g. a URL where the host or TLD includes non-ascii characters) will be encoded via punycode (see this article for a good description of why this is important).
+
+> ##### Underscores in Hostnames
+>
+> In pydantic underscores are allowed in all parts of a domain except the tld. Technically this might be wrong - in theory the hostname cannot have underscores, but subdomains can.
+>
+> To explain this; consider the following two cases:
+>
+> * `exam_ple.co.uk`: the hostname is `exam_ple`, which should not be allowed since it contains an underscore.
+> * `foo_bar.example.com`: the hostname is `example`, which should be allowed since the underscore is in the subdomain.
+> Without having an exhaustive list of TLDs, it would be impossible to differentiate between these two. Therefore underscores are allowed, but you can always do further validation in a validator if desired.
+>
+> Also, Chrome, Firefox, and Safari all currently accept `http://exam_ple.com` as a URL, so we're in good (or at least big) company.
