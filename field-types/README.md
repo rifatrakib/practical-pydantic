@@ -652,3 +652,12 @@ The following caveats apply:
 * `StrictInt` (and the `strict` option of `ConstrainedInt`) will not accept `bool` types, even though `bool` is a subclass of `int` in Python. Other subclasses will work.
 
 * `StrictFloat` (and the `strict` option of `ConstrainedFloat`) will not accept `int`.
+
+
+#### ByteSize
+
+You can use the `ByteSize` data type to convert byte string representation to raw bytes and print out human readable versions of the bytes as well.
+
+> ##### Note
+>
+> Note that `1b` will be parsed as "1 byte" and not "1 bit".
