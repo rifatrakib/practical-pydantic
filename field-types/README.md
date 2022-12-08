@@ -513,3 +513,8 @@ The `__str__` method for `Color` returns `self.as_named(fallback=True)`.
 #### Secret Types
 
 You can use the `SecretStr` and the `SecretBytes` data types for storing sensitive information that you do not want to be visible in logging or tracebacks. `SecretStr` and `SecretBytes` can be initialized idempotently or by using `str` or `bytes` literals respectively. The `SecretStr` and `SecretBytes` will be formatted as either `'**********'` or `''` on conversion to json.
+
+
+#### Json Type
+
+You can use `Json` data type to make pydantic first load a raw JSON string. It can also optionally be used to parse the loaded object into another type base on the type `Json` is parameterised with.
