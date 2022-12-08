@@ -426,7 +426,7 @@ If you require a custom URI/URL type, it can be created in a similar way to the 
 
 ##### URL Properties
 
-Assuming an input URL of `http://samuel:pass@example.com:8000/the/path/?query=here#fragment=is;this=bit`, the above types export the following properties:
+Assuming an input URL of `http://samuel:pass@example.com:8000/the/path/?query=here#fragment=is;this=bit`, the above types export the following properties: <!-- pragma: allowlist secret -->
 
 * `scheme`: always set - the url scheme (`http` above)
 
@@ -471,3 +471,40 @@ If further validation is required, these properties can be used by validators to
 > Without having an exhaustive list of TLDs, it would be impossible to differentiate between these two. Therefore underscores are allowed, but you can always do further validation in a validator if desired.
 >
 > Also, Chrome, Firefox, and Safari all currently accept `http://exam_ple.com` as a URL, so we're in good (or at least big) company.
+
+
+#### Color Type
+
+You can use the `Color` data type for storing colors as per `CSS3 specification`. Colors can be defined via:
+
+* name (e.g. `"Black"`, `"azure"`)
+
+* hexadecimal value (e.g. `"0x000"`, `"#FFFFFF"`, `"7fffd4"`)
+
+* RGB/RGBA tuples (e.g. `(255, 255, 255)`, `(255, 255, 255, 0.5)`)
+
+* RGB/RGBA strings (e.g. `"rgb(255, 255, 255)"`, `"rgba(255, 255, 255, 0.5)"`)
+
+* HSL strings (e.g. `"hsl(270, 60%, 70%)"`, `"hsl(270, 60%, 70%, .5)"`)
+
+`Color` has the following methods:
+
+* `original`: the original string or tuple passed to `Color`.
+
+* `as_named`: returns a named CSS3 color; fails if the alpha channel is set or no such color exists unless `fallback=True` is supplied, in which case it falls back to `as_hex`.
+
+* `as_hex`: returns a string in the format `#fff` or `#ffffff`; will contain 4 (or 8) hex values if the alpha channel is set, e.g. `#7f33cc26`.
+
+* `as_rgb`: returns a string in the format `rgb(<red>, <green>, <blue>)`, or `rgba(<red>, <green>, <blue>, <alpha>)` if the alpha channel is set.
+
+* `as_rgb_tuple`: returns a 3- or 4-tuple in RGB(a) format. The `alpha` keyword argument can be used to define whether the alpha channel should be included; options: `True` - always include, `False` - never include, `None` (default) - include if set.
+
+* `as_hsl`: string in the format `hsl(<hue deg>, <saturation %>, <lightness %>)` or `hsl(<hue deg>, <saturation %>, <lightness %>, <alpha>)` if the alpha channel is set.
+
+* `as_hsl_tuple`: returns a 3- or 4-tuple in HSL(a) format. The `alpha` keyword argument can be used to define whether the alpha channel should be included; options: `True` - always include, `False` - never include, `None` (the default) - include if set.
+
+The `__str__` method for `Color` returns `self.as_named(fallback=True)`.
+
+> ##### Note
+>
+> the `as_hsl*` refer to hue, saturation, lightness "HSL" as used in html and most of the world, __not__ "HLS" as used in Python's `colorsys`.
