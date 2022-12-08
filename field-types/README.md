@@ -518,3 +518,26 @@ You can use the `SecretStr` and the `SecretBytes` data types for storing sensiti
 #### Json Type
 
 You can use `Json` data type to make pydantic first load a raw JSON string. It can also optionally be used to parse the loaded object into another type base on the type `Json` is parameterised with.
+
+
+#### Payment Card Numbers
+
+The `PaymentCardNumber` type validates `payment cards` (such as a debit or credit card).
+
+`PaymentCardBrand` can be one of the following based on the BIN:
+
+* PaymentCardBrand.amex
+
+* PaymentCardBrand.mastercard
+
+* PaymentCardBrand.visa
+
+* PaymentCardBrand.other
+
+The actual validation verifies the card number is:
+
+* a `str` of only digits
+
+* `luhn` valid
+
+* the correct length based on the BIN, if Amex, Mastercard or Visa, and between 12 and 19 digits for all other brands
