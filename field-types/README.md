@@ -661,3 +661,17 @@ You can use the `ByteSize` data type to convert byte string representation to ra
 > ##### Note
 >
 > Note that `1b` will be parsed as "1 byte" and not "1 bit".
+
+
+#### Custom Data Types
+
+You can also define your own custom data types. There are several ways to achieve it.
+
+
+##### Classes with `__get_validators__`
+
+You use a custom class with a classmethod `__get_validators__`. It will be called to get validators to parse and validate the input data.
+
+> These validators have the same semantics as in `Validators`, you can declare a parameter `config`, `field`, etc.
+
+Similar validation could be achieved using `constr(regex=...)` except the value won't be formatted with a space, the schema would just include the full pattern and the returned value would be a vanilla string.
