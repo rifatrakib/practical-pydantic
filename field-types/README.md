@@ -680,3 +680,16 @@ Similar validation could be achieved using `constr(regex=...)` except the value 
 ##### Arbitrary Types Allowed
 
 You can allow arbitrary types using the `arbitrary_types_allowed` config in the `Model Config`.
+
+
+##### Generic Classes as Types
+
+> ##### Warning
+>
+> This is an advanced technique that you might not need in the beginning. In most of the cases you will probably be fine with standard _pydantic_ models.
+
+You can use `Generic Classes` as field types and perform custom validation based on the "type parameters" (or sub-types) with `__get_validators__`.
+
+If the Generic class that you are using as a sub-type has a classmethod `__get_validators__` you don't need to use `arbitrary_types_allowed` for it to work.
+
+Because you can declare validators that receive the current `field`, you can extract the `sub_fields` (from the generic class type parameters) and validate data with them.
