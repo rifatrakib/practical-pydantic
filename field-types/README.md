@@ -675,3 +675,8 @@ You use a custom class with a classmethod `__get_validators__`. It will be calle
 > These validators have the same semantics as in `Validators`, you can declare a parameter `config`, `field`, etc.
 
 Similar validation could be achieved using `constr(regex=...)` except the value won't be formatted with a space, the schema would just include the full pattern and the returned value would be a vanilla string.
+
+
+##### Arbitrary Types Allowed
+
+You can allow arbitrary types using the `arbitrary_types_allowed` config in the `Model Config`.

@@ -1,6 +1,6 @@
 import re
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 
 # https://en.wikipedia.org/wiki/Postcodes_in_the_United_Kingdom#Validation
 post_code_regex = re.compile(
@@ -49,8 +49,21 @@ class PostCode(str):
         return f"PostCode({super().__repr__()})"
 
 
+class Pet:
+    def __init__(self, name: str):
+        self.name = name
+
+
 class Model(BaseModel):
     post_code: PostCode
+
+
+class PetOwner(BaseModel):
+    pet: Pet
+    owner: str
+
+    class Config:
+        arbitrary_types_allowed = True
 
 
 model = Model(post_code="sw8 5el")
@@ -58,3 +71,23 @@ print(f"{model = }")
 print(f"{model.post_code = }")
 
 print(f"{Model.schema() = }")
+
+pet = Pet(name="Hedwig")
+m = PetOwner(owner="Harry", pet=pet)
+print(f"{m = }")
+print(f"{m.pet = }")
+print(f"{m.pet.name = }")
+print(f"{type(m.pet) = }")
+
+try:
+    m = PetOwner(owner="Harry", pet="Hedwig")
+    print(m)
+except ValidationError as e:
+    print(e)
+
+pet = Pet(name=42)
+m = PetOwner(owner="Harry", pet=pet)
+print(f"{m = }")
+print(f"{m.pet = }")
+print(f"{m.pet.name = }")
+print(f"{type(m.pet) = }")
