@@ -54,3 +54,49 @@ A few things to note on validators:
     * Validation is done in the order fields are defined. E.g. in the example above, `password2` has access to `password1` (and `name`), but `password1` does not have access to `password2`. See `Field Ordering` for more information on how fields are ordered.
 
     * If validation fails on another field (or that field is missing) it will not be included in `values`, hence `if "password1" in values and ...` in this example.
+
+
+#### Pre and per-item validators
+
+Validators can do a few more complex things.
+
+```
+class DemoModel(BaseModel):
+    square_numbers: List[int] = []
+    cube_numbers: List[int] = []
+
+    # '*' is the same as 'cube_numbers', 'square_numbers' here:
+    @validator("*", pre=True)
+    def split_str(cls, v):
+        if isinstance(v, str):
+            return v.split("|")
+        return v
+
+    @validator("cube_numbers", "square_numbers")
+    def check_sum(cls, v):
+        if sum(v) > 42:
+            raise ValueError("sum of numbers greater than 42")
+        return v
+
+    @validator("square_numbers", each_item=True)
+    def check_squares(cls, v):
+        assert v ** 0.5 % 1 == 0, f"{v} is not a square number"
+        return v
+
+    @validator("cube_numbers", each_item=True)
+    def check_cubes(cls, v):
+        # 64 ** (1 / 3) == 3.9999999999999996 (!)
+        # this is not a good way of checking cubes
+        assert v ** (1 / 3) % 1 == 0, f"{v} is not a cubed number"
+        return v
+```
+
+A few more things to note:
+
+* a single validator can be applied to multiple fields by passing it multiple field names.
+
+* a single validator can also be called on all fields by passing the special value "*".
+
+* the keyword argument `pre` will cause the validator to be called prior to other validation.
+
+* passing `each_item=True` will result in the validator being applied to individual values (e.g. of `List`, `Dict`, `Set`, etc.), rather than the whole object.
