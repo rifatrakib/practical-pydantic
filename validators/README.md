@@ -100,3 +100,8 @@ A few more things to note:
 * the keyword argument `pre` will cause the validator to be called prior to other validation.
 
 * passing `each_item=True` will result in the validator being applied to individual values (e.g. of `List`, `Dict`, `Set`, etc.), rather than the whole object.
+
+
+#### Subclass Validators and `each_item`
+
+If using a validator with a subclass that references a `List` type field on a parent class, using `each_item=True` will cause the validator not to run; instead, the list must be iterated over programmatically.
