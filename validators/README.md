@@ -105,3 +105,10 @@ A few more things to note:
 #### Subclass Validators and `each_item`
 
 If using a validator with a subclass that references a `List` type field on a parent class, using `each_item=True` will cause the validator not to run; instead, the list must be iterated over programmatically.
+
+
+#### Validate Always
+
+For performance reasons, by default validators are not called for fields when a value is not supplied. However there are situations where it may be useful or required to always call the validator, e.g. to set a dynamic default value.
+
+You'll often want to use this together with `pre`, since otherwise with `always=True` pydantic would try to validate the default `None` which would cause an error.
