@@ -123,3 +123,10 @@ As it is obvious, repetition has been reduced and the models become again almost
 > ##### Tip
 >
 > If you have a lot of fields that you want to validate, it usually makes sense to define a help function with which you will avoid setting `allow_reuse=True` over and over again.
+
+
+#### Root Validators
+
+Validation can also be performed on the entire model's data. As with field validators, root validators can have `pre=True`, in which case they're called before field validation occurs (and are provided with the raw input data), or `pre=False` (the default), in which case they're called after field validation.
+
+Field validation will not occur if `pre=True` root validators raise an error. As with field validators, "post" (i.e. `pre=False`) root validators by default will be called even if prior validators fail; this behaviour can be changed by setting the `skip_on_failure=True` keyword argument to the validator. The `values` argument will be a dict containing the values which passed field validation and field defaults where applicable.
