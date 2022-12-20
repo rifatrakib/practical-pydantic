@@ -112,3 +112,14 @@ If using a validator with a subclass that references a `List` type field on a pa
 For performance reasons, by default validators are not called for fields when a value is not supplied. However there are situations where it may be useful or required to always call the validator, e.g. to set a dynamic default value.
 
 You'll often want to use this together with `pre`, since otherwise with `always=True` pydantic would try to validate the default `None` which would cause an error.
+
+
+#### Reuse Validators
+
+Occasionally, you will want to use the same validator on multiple fields/models (e.g. to normalize some input data). The "naive" approach would be to write a separate function, then call it from multiple decorators. Obviously, this entails a lot of repetition and boiler plate code. To circumvent this, the `allow_reuse` parameter has been added to `pydantic.validator` in v1.2 (`False` by default).
+
+As it is obvious, repetition has been reduced and the models become again almost declarative.
+
+> ##### Tip
+>
+> If you have a lot of fields that you want to validate, it usually makes sense to define a help function with which you will avoid setting `allow_reuse=True` over and over again.
