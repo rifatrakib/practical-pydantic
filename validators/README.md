@@ -130,3 +130,15 @@ As it is obvious, repetition has been reduced and the models become again almost
 Validation can also be performed on the entire model's data. As with field validators, root validators can have `pre=True`, in which case they're called before field validation occurs (and are provided with the raw input data), or `pre=False` (the default), in which case they're called after field validation.
 
 Field validation will not occur if `pre=True` root validators raise an error. As with field validators, "post" (i.e. `pre=False`) root validators by default will be called even if prior validators fail; this behaviour can be changed by setting the `skip_on_failure=True` keyword argument to the validator. The `values` argument will be a dict containing the values which passed field validation and field defaults where applicable.
+
+
+#### Field Checks
+
+On class creation, validators are checked to confirm that the fields they specify actually exist on the model.
+
+Occasionally however this is undesirable: e.g. if you define a validator to validate fields on inheriting models. In this case you should set `check_fields=False` on the validator.
+
+
+#### Dataclass Validators
+
+Validators also work with pydantic dataclasses.
