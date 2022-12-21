@@ -71,3 +71,8 @@ Behaviour of _pydantic_ can be controlled via the `Config` class on a model or a
 #### Change behaviour globally
 
 If you wish to change the behaviour of pydantic globally, you can create your own custom `BaseModel` with custom `Config` since the config is inherited.
+
+
+#### Alias Generator
+
+If data source field names do not match your code style (e. g. CamelCase fields), you can automatically generate aliases using `alias_generator`. Here camel case refers to `"upper camel case"` aka pascal case e.g. `CamelCase`. If you'd like instead to use lower camel case e.g. `camelCase`, instead use the `to_lower_camel` function.
