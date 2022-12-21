@@ -66,3 +66,8 @@ Behaviour of _pydantic_ can be controlled via the `Config` class on a model or a
 * `post_init_call`: whether stdlib dataclasses `__post_init__` should be run before (default behaviour with value `'before_validation'`) or after (value `'after_validation'`) parsing and validation when they are converted
 
 * `allow_inf_nan`: whether to allows infinity (`+inf` an `-inf`) and NaN values to float fields, defaults to `True`, set to `False` for compatibility with `JSON`
+
+
+#### Change behaviour globally
+
+If you wish to change the behaviour of pydantic globally, you can create your own custom `BaseModel` with custom `Config` since the config is inherited.
