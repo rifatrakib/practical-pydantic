@@ -121,3 +121,14 @@ The field schema mapping from Python / pydantic to JSON Schema is done as follow
 #### Top-level schema generation
 
 You can also generate a top-level JSON Schema that only includes a list of models and related sub-models in its `definitions`.
+
+
+#### Schema customization
+
+You can customize the generated `$ref` JSON location: the definitions are always stored under the key `definitions`, but a specified prefix can be used for the references.
+
+This is useful if you need to extend or modify the JSON Schema default definitions location. E.g. with OpenAPI.
+
+It's also possible to extend/override the generated JSON schema in a model. To do it, use the `Config` sub-class attribute `schema_extra`. For example, you could add `examples` to the JSON Schema.
+
+For more fine-grained control, you can alternatively set `schema_extra` to a callable and post-process the generated schema. The callable can have one or two positional arguments. The first will be the schema dictionary. The second, if accepted, will be the model class. The callable is expected to mutate the schema dictionary in-place; the return value is not used.
