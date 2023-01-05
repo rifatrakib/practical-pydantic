@@ -99,3 +99,27 @@ Note that `orjson` takes care of `datetime` encoding natively, making it faster 
 #### `pickle.dumps(model)`
 
 Using the same plumbing as `copy()`, _pydantic_ models support efficient pickling and unpickling.
+
+
+#### Advanced include and exclude
+
+The `dict`, `json`, and `copy` methods support `include` and `exclude` arguments which can either be sets or dictionaries. This allows nested selection of which fields to export.
+
+The `True` indicates that we want to exclude or include an entire key, just as if we included it in a set. Of course, the same can be done at any depth level.
+
+Special care must be taken when including or excluding fields from a list or tuple of submodels or dictionaries. In this scenario, `dict` and related methods expect integer keys for element-wise inclusion or exclusion. To exclude a field from **every** member of a list or tuple, the dictionary key `"__all__"` can be used.
+
+The same holds for the `json` and `copy` methods.
+
+
+##### Model and field level include and exclude
+
+In addition to the explicit arguments `exclude` and `include` passed to `dict`, `json` and `copy` methods, we can also pass the `include/exclude` arguments directly to the `Field` constructor or the equivalent `field` entry in the models `Config` class.
+
+In the case where multiple strategies are used, `exclude/include` fields are merged according to the following rules:
+
+* First, model config level settings (via `"fields"` entry) are merged per field with the field constructor settings (i.e. `Field(..., exclude=True)`), with the field constructor taking priority.
+
+* The resulting settings are merged per class with the explicit settings on `dict`, `json`, `copy` calls with the explicit settings taking priority.
+
+Note that while merging settings, `exclude` entries are merged by computing the "union" of keys, while `include` entries are merged by computing the "intersection" of keys.
