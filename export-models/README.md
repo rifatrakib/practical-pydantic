@@ -94,3 +94,8 @@ To improve the performance of encoding and decoding JSON, alternative JSON imple
 `ujson` generally cannot be used to dump JSON since it doesn't support encoding of objects like datetimes and does not accept a `default` fallback function argument. To do this, you may use another library like `orjson`.
 
 Note that `orjson` takes care of `datetime` encoding natively, making it faster than `json.dumps` but meaning you cannot always customise the encoding using `Config.json_encoders`.
+
+
+#### `pickle.dumps(model)`
+
+Using the same plumbing as `copy()`, _pydantic_ models support efficient pickling and unpickling.
