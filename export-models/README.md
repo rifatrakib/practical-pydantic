@@ -20,3 +20,8 @@ Arguments:
 * `exclude_defaults`: whether fields which are equal to their default values (whether set or otherwise) should be excluded from the returned dictionary; default `False`
 
 * `exclude_none`: whether fields which are equal to `None` should be excluded from the returned dictionary; default `False`
+
+
+#### `dict(model)` and iteration
+
+_pydantic_ models can also be converted to dictionaries using `dict(model)`, and you can also iterate over a model's field using `for field_name, value in model:`. With this approach the raw field values are returned, so sub-models will not be converted to dictionaries.
