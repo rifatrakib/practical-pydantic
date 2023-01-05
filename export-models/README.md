@@ -25,3 +25,18 @@ Arguments:
 #### `dict(model)` and iteration
 
 _pydantic_ models can also be converted to dictionaries using `dict(model)`, and you can also iterate over a model's field using `for field_name, value in model:`. With this approach the raw field values are returned, so sub-models will not be converted to dictionaries.
+
+
+#### `model.copy(...)`
+
+`copy()` allows models to be duplicated, which is particularly useful for immutable models.
+
+Arguments:
+
+* `include`: fields to include in the returned dictionary
+
+* `exclude`: fields to exclude from the returned dictionary
+
+* `update`: a dictionary of values to change when creating the copied model
+
+* `deep`: whether to make a deep copy of the new model; default `False`
