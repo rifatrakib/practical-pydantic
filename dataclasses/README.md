@@ -26,3 +26,8 @@ If you want to modify the `Config` like you would with a `BaseModel`, you have t
 * Option 3 - use a `Config` class like for a `BaseModel`
 
 > pydantic dataclasses support `Config.extra` but some default behaviour of stdlib dataclasses may prevail. For example, when `print`ing a pydantic dataclass with allowed extra fields, it will still use the `__str__` method of stdlib dataclass and show only the required fields.
+
+
+#### Nested dataclasses
+
+Nested dataclasses are supported both in dataclasses and normal models. Dataclasses attributes can be populated by tuples, dictionaries or instances of the dataclass itself.
