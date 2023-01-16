@@ -59,3 +59,17 @@ Bear in mind that stdlib dataclasses (nested or not) are __automatically convert
 ##### Use custom types
 
 Since stdlib dataclasses are automatically converted to add validation using custom types may cause some unexpected behaviour. In this case you can simply add `arbitrary_types_allowed` in the config!
+
+
+#### Initialize hooks
+
+When you initialize a dataclass, it is possible to execute code _after_ validation with the help of `__post_init_post_parse__`. This is not the same as `__post_init__`, which executes code _before_ validation.
+
+> If you use a stdlib `dataclass`, you may only have `__post_init__` available and wish the validation to be done before. In this case you can set `Config.post_init_call = "after_validation"`
+
+
+##### Difference with stdlib dataclasses
+
+Note that the `dataclasses.dataclass` from Python stdlib implements only the `__post_init__` method since it doesn't run a validation step.
+
+When substituting usage of `dataclasses.dataclass` with `pydantic.dataclasses.dataclass`, it is recommended to move the code executed in the `__post_init__` method to the `__post_init_post_parse__` method, and only leave behind part of code which needs to be executed before validation.
