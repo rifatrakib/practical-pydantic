@@ -73,3 +73,8 @@ When you initialize a dataclass, it is possible to execute code _after_ validati
 Note that the `dataclasses.dataclass` from Python stdlib implements only the `__post_init__` method since it doesn't run a validation step.
 
 When substituting usage of `dataclasses.dataclass` with `pydantic.dataclasses.dataclass`, it is recommended to move the code executed in the `__post_init__` method to the `__post_init_post_parse__` method, and only leave behind part of code which needs to be executed before validation.
+
+
+#### JSON Dumping
+
+_Pydantic_ dataclasses do not feature a `.json()` function. To dump them as JSON, you will need to make use of the *pydantic_encoder*.
