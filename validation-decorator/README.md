@@ -41,3 +41,18 @@ A few notes:
 * `max` has no type annotation, so will be considered as `Any` by the decorator
 
 Type coercion like this can be extremely helpful but also confusing or not desired.
+
+
+#### Function Signatures
+
+The decorator is designed to work with functions using all possible parameter configurations and all possible combinations of these:
+
+* positional or keyword arguments with or without defaults
+
+* variable positional arguments defined via `*` (often `*args`)
+
+* variable keyword arguments defined via `**` (often `**kwargs`)
+
+* keyword only arguments - arguments after `*,`
+
+* positional only arguments - arguments before `, /` (new in Python 3.8)
