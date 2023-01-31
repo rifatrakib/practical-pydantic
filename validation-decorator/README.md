@@ -56,3 +56,8 @@ The decorator is designed to work with functions using all possible parameter co
 * keyword only arguments - arguments after `*,`
 
 * positional only arguments - arguments before `, /` (new in Python 3.8)
+
+
+#### Using Field to describe function arguments
+
+`Field` can also be used with `validate_arguments` to provide extra information about the field and validations. In general it should be used in a type hint with `Annotated`, unless `default_factory` is specified, in which case it should be used as the default value of the field. The `alias` can be used with the decorator as normal.
