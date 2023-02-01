@@ -71,3 +71,8 @@ The `validate_arguments` decorator should work "out of the box" with `mypy` sinc
 #### Validate without calling the function
 
 By default, arguments validation is done by directly calling the decorated function with parameters. But what if you wanted to validate them without actually calling the function? To do that you can call the `validate` method bound to the decorated function.
+
+
+#### Raw function
+
+The raw function which was decorated is accessible, this is useful if in some scenarios you trust your input arguments and want to call the function in the most performant way.
