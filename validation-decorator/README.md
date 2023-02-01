@@ -61,3 +61,13 @@ The decorator is designed to work with functions using all possible parameter co
 #### Using Field to describe function arguments
 
 `Field` can also be used with `validate_arguments` to provide extra information about the field and validations. In general it should be used in a type hint with `Annotated`, unless `default_factory` is specified, in which case it should be used as the default value of the field. The `alias` can be used with the decorator as normal.
+
+
+#### Usage with mypy
+
+The `validate_arguments` decorator should work "out of the box" with `mypy` since it's defined to return a function with the same signature as the function it decorates. The only limitation is that since we trick mypy into thinking the function returned by the decorator is the same as the function being decorated; access to the `raw function` or other attributes will require `type: ignore`.
+
+
+#### Validate without calling the function
+
+By default, arguments validation is done by directly calling the decorated function with parameters. But what if you wanted to validate them without actually calling the function? To do that you can call the `validate` method bound to the decorated function.
