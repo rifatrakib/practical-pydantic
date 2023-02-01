@@ -76,3 +76,8 @@ By default, arguments validation is done by directly calling the decorated funct
 #### Raw function
 
 The raw function which was decorated is accessible, this is useful if in some scenarios you trust your input arguments and want to call the function in the most performant way.
+
+
+#### Async Functions
+
+`validate_arguments` can also be used on async functions.
