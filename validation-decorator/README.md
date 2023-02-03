@@ -90,3 +90,30 @@ The model behind `validate_arguments` can be customised using a config setting w
 > The `fields` and `alias_generator` properties of `Config` which allow aliases to be configured are not supported yet with `@validate_arguments`, using them will raise an error.
 
 Configuration is set using the `config` keyword argument to the decorator, it may be either a config class or a dict of properties which are converted to a class later.
+
+
+#### Limitations
+
+`validate_arguments` has been released on a provisional basis without all the bells and whistles, which may be added late.
+
+* __Validation Exception__: Currently upon validation failure, a standard pydantic `ValidationError` is raised. This is helpful since it's `str()` method provides useful details of the error which occurred and methods like `.errors()` and `.json()` can be useful when exposing the errors to end users, however `ValidationError` inherits from `ValueError` __not__ `TypeError` which may be unexpected since Python would raise a `TypeError` upon invalid or missing arguments. This may be addressed in future by either allow a custom error or raising a different exception by default, or both.
+
+* __Coercion and Strictness__: _pydantic_ currently leans on the side of trying to coerce types rather than raise an error if a type is wrong and `validate_arguments` is no different. If pydantic gets a "strict" mode in future, `validate_arguments` will have an option to use this, it may even become the default for the decorator.
+
+* __Performance__: We've made a big effort to make _pydantic_ as performant as possible and argument inspect and model creation is only performed once when the function is defined, however there will still be a performance impact to using the `validate_arguments` decorator compared to calling the raw function.
+
+In many situations this will have little or no noticeable effect, however be aware that `validate_arguments` is not an equivalent or alternative to function definitions in strongly typed languages; it never will be.
+
+* __Return Value__: The return value of the function is not validated against its return type annotation, this may be added as an option in future.
+
+* __Config and Validators__: `fields` and `alias_generator` on custom Config are not supported, neither are `validators`.
+
+* __Model fields and reserved arguments__: The following names may not be used by arguments since they can be used internally to store information about the function's signature:
+
+    * `v__args`
+    * `v__kwargs`
+    * `v__positional_only`
+
+These names (together with `"args"` and `"kwargs"`) may or may not (depending on the function's signature) appear as fields on the internal _pydantic_ model accessible via `.model` thus this model isn't especially useful (e.g. for generating a schema) at the moment.
+
+This should be fixable in future as the way error are raised is changed.
