@@ -81,3 +81,12 @@ The raw function which was decorated is accessible, this is useful if in some sc
 #### Async Functions
 
 `validate_arguments` can also be used on async functions.
+
+
+#### Custom Config
+
+The model behind `validate_arguments` can be customised using a config setting which is equivalent to setting the `Config` sub-class in normal models.
+
+> The `fields` and `alias_generator` properties of `Config` which allow aliases to be configured are not supported yet with `@validate_arguments`, using them will raise an error.
+
+Configuration is set using the `config` keyword argument to the decorator, it may be either a config class or a dict of properties which are converted to a class later.
