@@ -122,3 +122,70 @@ class Settings(BaseSettings):
 You can also use the keyword argument override to tell Pydantic not to load any file at all (even if one is set in the `Config` class) by passing `None` as the instantiation keyword argument, e.g. `settings = Settings(_env_file=None)`.
 
 Because python-dotenv is used to parse the file, bash-like semantics such as `export` can be used which (depending on your OS and environment) may allow your dotenv file to also be used with `source`.
+
+
+#### Secret Support
+
+Placing secret values in files is a common pattern to provide sensitive configuration to an application.
+
+A secret file follows the same principal as a dotenv file except it only contains a single value and the file name is used as the key. A secret file will look like the following:
+
+`/var/run/database_password`
+
+```
+super_secret_database_password
+```
+
+Once you have your secret files, pydantic supports loading it in two ways:
+
+1. setting `secrets_dir` on `Config` in a `BaseSettings` class to the directory where your secret files are stored:
+
+```
+class Settings(BaseSettings):
+    ...
+    database_password: str
+
+    class Config:
+        secrets_dir = "/var/run"
+```
+
+2. instantiating a `BaseSettings` derived class with the `_secrets_dir` keyword argument:
+
+```
+settings = Settings(_secrets_dir="/var/run")
+```
+
+In either case, the value of the passed argument can be any valid directory, either absolute or relative to the current working directory. __Note that a non existent directory will only generate a warning__. From there, pydantic will handle everything for you by loading in your variables and validating them.
+
+Even when using a secrets directory, pydantic will still read environment variables from a dotenv file or the environment, __a dotenv file and environment variables will always take priority over values loaded from the secrets directory__.
+
+Passing a file path via the `_secrets_dir` keyword argument on instantiation (method 2) will override the value (if any) set on the `Config` class.
+
+
+##### Use Case: Docker Secrets
+
+Docker Secrets can be used to provide sensitive configuration to an application running in a Docker container. To use these secrets in a pydantic application the process is simple. More information regarding creating, managing and using secrets in Docker see the official `Docker documentation`.
+
+First, define your Settings
+
+```
+class Settings(BaseSettings):
+    my_secret_data: str
+
+    class Config:
+        secrets_dir = "/run/secrets"
+```
+
+> By default Docker uses `/run/secrets` as the target mount point. If you want to use a different location, change `Config.secrets_dir` accordingly.
+
+Then, create your secret via the Docker CLI
+
+```
+printf "This is a secret" | docker secret create my_secret_data -
+```
+
+Last, run your application inside a Docker container and supply your newly created secret
+
+```
+docker service create --name pydantic-with-secrets --secret my_secret_data pydantic-app:latest
+```
