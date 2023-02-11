@@ -204,3 +204,103 @@ In the case where a value is specified for the same `Settings` field in multiple
 4. Variables loaded from the secrets directory.
 
 5. The default field values for the `Settings` model.
+
+
+#### Customise settings sources
+
+If the default order of priority doesn't match your needs, it's possible to change it by overriding the `customise_sources` method on the `Config` class of your `Settings`.
+
+`customise_sources` takes three callables as arguments and returns any number of callables as a tuple. In turn these callables are called to build the inputs to the fields of the settings class.
+
+Each callable should take an instance of the settings class as its sole argument and return a `dict`.
+
+
+##### Changing Priority
+
+The order of the returned callables decides the priority of inputs; first item is the highest priority.
+
+```
+class Settings(BaseSettings):
+    database_dsn: PostgresDsn
+
+    class Config:
+        @classmethod
+        def customise_sources(
+            cls,
+            init_settings: SettingsSourceCallable,
+            env_settings: SettingsSourceCallable,
+            file_secret_settings: SettingsSourceCallable,
+        ) -> Tuple[SettingsSourceCallable, ...]:
+            return env_settings, init_settings, file_secret_settings
+
+
+print(Settings(database_dsn="postgres://postgres@localhost:5432/kwargs_db"))
+```
+
+By flipping `env_settings` and `init_settings`, environment variables now have precedence over `__init__` kwargs.
+
+
+##### Adding sources
+
+As explained earlier, pydantic ships with multiples built-in settings sources. However, you may occasionally need to add your own custom sources, `customise_sources` makes this very easy:
+
+```
+def json_config_settings_source(settings: BaseSettings) -> Dict[str, Any]:
+    """
+    A simple settings source that loads variables from a JSON file
+    at the project's root.
+
+    Here we happen to choose to use the `env_file_encoding` from Config
+    when reading `config.json`
+    """
+    encoding = settings.__config__.env_file_encoding
+    return json.loads(Path("config.json").read_text(encoding))
+
+
+class CustomSettings(BaseSettings):
+    foobar: str
+
+    class Config:
+        env_file_encoding = "utf-8"
+
+        @classmethod
+        def customise_sources(
+            cls,
+            init_settings,
+            env_settings,
+            file_secret_settings,
+        ):
+            return (
+                init_settings,
+                json_config_settings_source,
+                env_settings,
+                file_secret_settings,
+            )
+
+
+print(CustomSettings())
+```
+
+
+##### Removing sources
+
+You might also want to disable a source:
+
+```
+class RemoveSettings(BaseSettings):
+    my_api_key: str
+
+    class Config:
+        @classmethod
+        def customise_sources(
+            cls,
+            init_settings: SettingsSourceCallable,
+            env_settings: SettingsSourceCallable,
+            file_secret_settings: SettingsSourceCallable,
+        ) -> Tuple[SettingsSourceCallable, ...]:
+            # here we choose to ignore arguments from init_settings
+            return env_settings, file_secret_settings
+
+
+print(Settings(my_api_key="this is ignored"))  # pragma: allowlist secret
+```
