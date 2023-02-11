@@ -189,3 +189,18 @@ Last, run your application inside a Docker container and supply your newly creat
 ```
 docker service create --name pydantic-with-secrets --secret my_secret_data pydantic-app:latest
 ```
+
+
+#### Field value priority
+
+In the case where a value is specified for the same `Settings` field in multiple ways, the selected value is determined as follows (in descending order of priority):
+
+1. Arguments passed to the `Settings` class initialiser.
+
+2. Environment variables, e.g. `my_prefix_special_function` as described above.
+
+3. Variables loaded from a dotenv (`.env`) file.
+
+4. Variables loaded from the secrets directory.
+
+5. The default field values for the `Settings` model.
