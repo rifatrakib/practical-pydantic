@@ -63,3 +63,62 @@ JSON is only parsed in top-level fields, if you need to parse JSON in sub-models
 Nested environment variables take precedence over the top-level environment variable JSON (e.g. in the example above, `SUB_MODEL__V2` trumps `SUB_MODEL`).
 
 You may also populate a complex type by providing your own parsing function to the `parse_env_var` classmethod in the Config object.
+
+
+#### Dotenv (.env) support
+
+Dotenv files (generally named `.env`) are a common pattern that make it easy to use environment variables in a platform-independent manner.
+
+A dotenv file follows the same general principles of all environment variables, and looks something like:
+
+```
+# ignore comment
+ENVIRONMENT="production"
+REDIS_ADDRESS=localhost:6379
+MEANING_OF_LIFE=42
+MY_VAR='Hello world'
+```
+
+Once you have your `.env` file filled with variables, pydantic supports loading it in two ways:
+
+1. setting `env_file` (and `env_file_encoding` if you don't want the default encoding of your OS) on `Config` in a `BaseSettings` class:
+
+```
+class Settings(BaseSettings):
+    ...
+
+    class Config:
+        env_file = ".env"
+        env_file_encoding = "utf-8"
+```
+
+2. instantiating a `BaseSettings` derived class with the `_env_file` keyword argument (and the `_env_file_encoding` if needed):
+
+```
+settings = Settings(_env_file="prod.env", _env_file_encoding="utf-8")
+```
+
+In either case, the value of the passed argument can be any valid path or filename, either absolute or relative to the current working directory. From there, pydantic will handle everything for you by loading in your variables and validating them.
+
+Even when using a dotenv file, pydantic will still read environment variables as well as the dotenv file, __environment variables will always take priority over values loaded from a dotenv file__.
+
+Passing a file path via the `_env_file` keyword argument on instantiation (method 2) will override the value (if any) set on the `Config` class. If the above snippets were used in conjunction, `prod.env` would be loaded while `.env` would be ignored.
+
+If you need to load multiple dotenv files, you can pass the file paths as a `list` or `tuple`.
+
+Later files in the list/tuple will take priority over earlier files.
+
+```
+from pydantic import BaseSettings
+
+class Settings(BaseSettings):
+    ...
+
+    class Config:
+        # `.env.prod` takes priority over `.env`
+        env_file = ".env", ".env.prod"
+```
+
+You can also use the keyword argument override to tell Pydantic not to load any file at all (even if one is set in the `Config` class) by passing `None` as the instantiation keyword argument, e.g. `settings = Settings(_env_file=None)`.
+
+Because python-dotenv is used to parse the file, bash-like semantics such as `export` can be used which (depending on your OS and environment) may allow your dotenv file to also be used with `source`.
